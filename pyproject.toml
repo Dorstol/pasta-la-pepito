@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "pasta-la-pepito"
+version = "0.1.0"
+description = ""
+authors = ["Oleh Sofronov <olehsofronov@gmail.com>, Vladislav Gryadko <vgryadko@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
