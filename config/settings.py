@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import order.apps
-import product.apps
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
