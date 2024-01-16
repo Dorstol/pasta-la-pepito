@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from order.models import Order, OrderProduct
+from order.models import CartOrder, OrderProduct
 
 
-@admin.register(Order)
+@admin.register(CartOrder)
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
         "name",
@@ -23,5 +23,10 @@ class OrderProductAdmin(admin.ModelAdmin):
     list_display = [
         "product",
         "product_quantity",
-        "ingredients",
+        "display_ingredients",
     ]
+
+    def display_ingredients(self, obj):
+        return ", ".join([ingredient.name for ingredient in obj.ingredients.all()])
+
+    display_ingredients.short_description = "Ingredients"

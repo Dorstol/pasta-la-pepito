@@ -22,28 +22,7 @@ BILLING = (
 )
 
 
-class OrderProduct(models.Model):
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.DO_NOTHING,
-        related_name="products",
-    )
-    product_quantity = models.IntegerField(
-        default=0,
-    )
-    ingredients = models.ForeignKey(
-        Ingredient,
-        on_delete=models.DO_NOTHING,
-        related_name="ingredients",
-        blank=True,
-        null=True,
-    )
-
-    def __str__(self):
-        return f"Product {self.product.name}, quantity {self.product_quantity} with ingredients {self.ingredients}"
-
-
-class Order(models.Model):
+class CartOrder(models.Model):
     name = models.CharField(
         max_length=255,
     )
@@ -91,10 +70,35 @@ class Order(models.Model):
         default=timezone.now,
     )
     cart = models.ManyToManyField(
-        OrderProduct,
-        related_name="cart",
+        "OrderProduct",
+        related_name="orders",
     )
-    # customer = Customer
 
     def get_full_address(self):
         return f"{self.street} Vul., bld. {self.building}, apt. {self.apartment}"
+
+
+class OrderProduct(models.Model):
+    order_id = models.ForeignKey(
+        CartOrder,
+        on_delete=models.DO_NOTHING,
+        related_name="orders",
+        blank=True,
+        null=True,
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.DO_NOTHING,
+        related_name="products",
+    )
+    product_quantity = models.IntegerField(
+        default=1,
+    )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        related_name="ingredients",
+        blank=True,
+    )
+
+    def __str__(self):
+        return f"Product {self.product.name}, quantity {self.product_quantity} with ingredients {self.ingredients}"
