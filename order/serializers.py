@@ -43,10 +43,12 @@ class CartOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         cart_data = validated_data.pop("cart")
         order = CartOrder.objects.create(**validated_data)
+        print(order)
 
         for item_data in cart_data:
             ingredients_data = item_data.pop("ingredients", [])
-            order_product = OrderProduct.objects.create(order=order, **item_data)
+            order_product = OrderProduct.objects.create(order_id=order.id, **item_data)
+            print(order_product)
 
             order_product.ingredients.set(ingredients_data)
 

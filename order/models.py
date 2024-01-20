@@ -83,8 +83,6 @@ class OrderProduct(models.Model):
         CartOrder,
         on_delete=models.DO_NOTHING,
         related_name="orders",
-        blank=True,
-        null=True,
     )
     product = models.ForeignKey(
         Product,
