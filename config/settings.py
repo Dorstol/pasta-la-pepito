@@ -20,9 +20,12 @@ INSTALLED_APPS = [
     # Local apps
     "product.apps.ProductConfig",
     "order.apps.OrderConfig",
+    "accounts.apps.AccountsConfig",
     # 3-rd party apps
     "rest_framework",
+    "rest_framework.authtoken",
     "phonenumber_field",
+    "djoser",
 ]
 
 MIDDLEWARE = [
@@ -91,3 +94,11 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "accounts.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+}
