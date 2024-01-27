@@ -50,6 +50,9 @@ class Product(models.Model):
         on_delete=models.DO_NOTHING,
         related_name="categories",
     )
+    rating = models.IntegerField(
+        default=0,
+    )
 
     def __str__(self):
         return self.name

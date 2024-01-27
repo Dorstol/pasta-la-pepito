@@ -5,24 +5,24 @@ from phonenumber_field.modelfields import PhoneNumberField
 from product.models import Product, Ingredient
 
 STATUS = (
-    ("PD", "Pending"),
-    ("CF", "Confirmed"),
-    ("DD", "Delivered"),
-    ("CD", "Canceled"),
+    ("PENDING", "Pending"),
+    ("CONFIRMED", "Confirmed"),
+    ("DELIVERED", "Delivered"),
+    ("CANCELED", "Canceled"),
 )
 
 RECEIVING = (
-    ("DV", "Delivery"),
-    ("SP", "Self pickup"),
+    ("DELIVERY", "Delivery"),
+    ("SELF_PICKUP", "Self pickup"),
 )
 
 BILLING = (
-    ("CC", "Credit card"),
-    ("CH", "Cash"),
+    ("CREDIT_CARD", "Credit card"),
+    ("CASH", "Cash"),
 )
 
 
-class CartOrder(models.Model):
+class CustomerOrder(models.Model):
     name = models.CharField(
         max_length=255,
     )
@@ -79,24 +79,24 @@ class CartOrder(models.Model):
 
 
 class OrderProduct(models.Model):
-    order_id = models.ForeignKey(
-        CartOrder,
-        on_delete=models.DO_NOTHING,
-        related_name="orders",
+    order = models.ForeignKey(
+        CustomerOrder,
+        on_delete=models.CASCADE,
+        related_name="order_products",
     )
     product = models.ForeignKey(
         Product,
-        on_delete=models.DO_NOTHING,
-        related_name="products",
+        on_delete=models.CASCADE,
+        related_name="order_products",
     )
-    product_quantity = models.IntegerField(
+    quantity = models.IntegerField(
         default=1,
     )
     ingredients = models.ManyToManyField(
         Ingredient,
-        related_name="ingredients",
+        related_name="order_products",
         blank=True,
     )
 
     def __str__(self):
-        return f"Product {self.product.name}, quantity {self.product_quantity} with ingredients {self.ingredients}"
+        return f"Order: {self.order.name}, Product: {self.product.name}, Quantity: {self.quantity}"

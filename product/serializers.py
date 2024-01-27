@@ -34,4 +34,5 @@ class ProductSerializer(serializers.ModelSerializer):
             "description",
             "short_description",
             "category",
+            "rating",
         ]

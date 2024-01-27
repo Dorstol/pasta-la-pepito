@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from order.models import CartOrder, OrderProduct
+from order.models import CustomerOrder, OrderProduct
 
 
-@admin.register(CartOrder)
+@admin.register(CustomerOrder)
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
         "name",
@@ -22,7 +22,7 @@ class OrderAdmin(admin.ModelAdmin):
 class OrderProductAdmin(admin.ModelAdmin):
     list_display = [
         "product",
-        "product_quantity",
+        "quantity",
         "display_ingredients",
     ]
 

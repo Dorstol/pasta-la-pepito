@@ -1,28 +1,19 @@
 from rest_framework import serializers
 
-from order.models import CartOrder, OrderProduct
-from product.serializers import ProductSerializer, IngredientSerializer
+from order.models import CustomerOrder, OrderProduct
 
 
 class OrderProductSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
-    ingredients = IngredientSerializer(many=True)
-
     class Meta:
         model = OrderProduct
-        fields = [
-            "order_id",
-            "product",
-            "product_quantity",
-            "ingredients",
-        ]
+        fields = ["product", "quantity", "ingredients"]
 
 
-class CartOrderSerializer(serializers.ModelSerializer):
+class CustomerOrderSerializer(serializers.ModelSerializer):
     cart = OrderProductSerializer(many=True)
 
     class Meta:
-        model = CartOrder
+        model = CustomerOrder
         fields = [
             "name",
             "status",
@@ -36,20 +27,18 @@ class CartOrderSerializer(serializers.ModelSerializer):
             "street",
             "building",
             "apartment",
-            "created_at",
             "cart",
         ]
 
     def create(self, validated_data):
-        cart_data = validated_data.pop("cart")
-        order = CartOrder.objects.create(**validated_data)
-        print(order)
+        order_products_data = validated_data.pop("cart")
+        order = CustomerOrder.objects.create(**validated_data)
 
-        for item_data in cart_data:
-            ingredients_data = item_data.pop("ingredients", [])
-            order_product = OrderProduct.objects.create(order_id=order.id, **item_data)
-            print(order_product)
-
+        for order_product_data in order_products_data:
+            ingredients_data = order_product_data.pop("ingredients", [])
+            order_product = OrderProduct.objects.create(
+                order=order, **order_product_data
+            )
             order_product.ingredients.set(ingredients_data)
 
         return order
