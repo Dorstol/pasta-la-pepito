@@ -1,58 +1,43 @@
-from rest_framework.generics import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from product.models import Product, Category, Ingredient
 from product.serializers import (
-    ProductSerializer,
+    ProductReadSerializer,
+    ProductWriteSerializer,
     CategorySerializer,
     IngredientSerializer,
 )
 
 
-class ProductViewSet(ViewSet):
-    def get_queryset(self):
-        return Product.objects.all()
+class ProductViewSet(ModelViewSet):
+    """
+    CRUD for product
+    """
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = ProductSerializer(queryset, many=True)
-        return Response(serializer.data)
+    queryset = Product.objects.all()
 
-    def retrieve(self, request, pk=None):
-        queryset = self.get_queryset()
-        product = get_object_or_404(queryset, pk=pk)
-        serializer = ProductSerializer(product)
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update", "destroy"):
+            return ProductWriteSerializer
+
+        return ProductReadSerializer
 
 
-class CategoryViewSet(ViewSet):
-    def get_queryset(self):
-        return Category.objects.all()
+class CategoryViewSet(ReadOnlyModelViewSet):
+    """
+    List and Retrieve categories
+    """
 
-    def list(self, request):
-        queryset = self.get_queryset()
-        serializer = CategorySerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = self.get_queryset()
-        category = get_object_or_404(queryset, pk=pk)
-        serializer = CategorySerializer(category)
-        return Response(serializer.data)
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (permissions.AllowAny,)
 
 
-class IngredientViewSet(ViewSet):
-    def get_queryset(self):
-        return Ingredient.objects.all()
+class IngredientViewSet(ReadOnlyModelViewSet):
+    """
+    List ingredients
+    """
 
-    def list(self, request):
-        queryset = self.get_queryset()
-        serializer = IngredientSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = self.get_queryset()
-        ingredient = get_object_or_404(queryset, pk=pk)
-        serializer = IngredientSerializer(ingredient)
-        return Response(serializer.data)
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer

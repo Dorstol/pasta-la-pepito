@@ -4,31 +4,47 @@ from product.models import Product, Ingredient, Category
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for ingredients
+    """
+
     class Meta:
         model = Ingredient
-        fields = [
-            "name",
-            "price",
-            "short_description",
-        ]
+        fields = "__all__"
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """
+    Serializer class for categories
+    """
+
     class Meta:
         model = Category
-        fields = [
-            "name",
-            "description",
-        ]
+        fields = "__all__"
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductReadSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for read products
+    """
+
+    category = serializers.CharField(source="category.name", read_only=True)
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+
+class ProductWriteSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for CRUD product
+    """
+
     category = CategorySerializer()
 
     class Meta:
         model = Product
         fields = [
-            "id",
             "name",
             "price",
             "description",
@@ -36,3 +52,10 @@ class ProductSerializer(serializers.ModelSerializer):
             "category",
             "rating",
         ]
+
+    def create(self, validated_data):
+        category = validated_data.pop("category")
+        instance, created = Category.objects.get_or_create(**category)
+        product = Product.objects.create(**validated_data, category=instance)
+
+        return product
